@@ -1,0 +1,82 @@
+body {
+  background-color: #FFF8DC;  
+  font-family: 'Dancing Script', cursive;  
+}
+
+h1, h2, h3 {
+  font-size: 3.5rem !important;
+  font-weight: 700;
+  color: #8b4513;
+  font-family: 'Dancing Script', cursive;
+}
+
+h2 {
+  font-size: 2.5rem !important;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 2rem !important;
+  font-weight: 700;
+}
+
+
+.nav-link, .navbar-brand, .text-bakery, .text-primary {
+  color: #8b4513 !important;  
+}
+
+.nav-link:hover {
+  color: #5A2D10 !important;
+  cursor: pointer;
+}
+
+
+/* Hero Section */
+.hero-section {  
+  padding: 5rem 0;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;  
+  border-top: 2px solid #8b4513;
+}
+
+
+
+.hero-text {
+  color: #4a4a4a;
+  line-height: 1.7;
+}
+
+/* Кастомная кнопка */
+.btn-bakery, .btn-outline-secondary {
+  background-color: #8b4513;
+  color: #FFF8DC;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-bakery:hover, .btn-outline-secondary:hover {
+  background-color: #5A2D10;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+  color: #FFF8DC !important;
+}
+
+.f {
+  border-top: 2px solid #8b4513;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #8b4513;
+  color: #FFF8DC !important;
+}
+
+.cih:hover {
+  cursor: pointer;
+  transform: scaleY(1.1);
+  z-index: 1;
+  position: relative;
+}
+
