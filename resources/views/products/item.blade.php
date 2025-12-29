@@ -5,6 +5,24 @@
            <p class="text-muted">{{ $product->description }}</p>
            <p class="fw-bold text-primary">{{ $product->price }} ₽</p>
 
+      <!-- Блок: количество + кнопки -->
+        <div class="d-flex align-items-center mb-2">
+            <label for="quantity_{{ $product->id }}" class="me-2 small">Кол-во:</label>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="decreaseQuantity({{ $product->id }})">−</button>
+            <input 
+                type="number" 
+                name="quantity" 
+                id="quantity_{{ $product->id }}" 
+                class="form-control form-control-sm text-center mx-1" 
+                value="{{ $cart[$product->id]['quantity'] ?? 1 }}" 
+                min="1" 
+                max="10" 
+                style="width: 60px;"
+                readonly
+            >
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="increaseQuantity({{ $product->id }})">+</button>
+        </div>
+
 
          <!-- Условие: кнопка только для авторизованных -->
       <div class="mt-3">
@@ -24,3 +42,22 @@
 
     </div>
 </div>
+
+
+<script>
+function increaseQuantity(productId) {
+    const input = document.getElementById('quantity_' + productId);
+    let value = parseInt(input.value);
+    if (value < 100) {
+        input.value = value + 1;
+    }
+}
+
+function decreaseQuantity(productId) {
+    const input = document.getElementById('quantity_' + productId);
+    let value = parseInt(input.value);
+    if (value > 1) {
+        input.value = value - 1;
+    }
+}
+</script>
