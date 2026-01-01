@@ -80,3 +80,14 @@ h3 {
   position: relative;
 }
 
+
+.delete-wrapper .delete-btn {        
+    border-color: #8b4513 !important;
+    color: #8b4513 !important;
+}
+
+.delete-wrapper:hover .delete-btn {
+    background-color: #8b4513;
+    color: #FFF8DC !important;    
+}
+

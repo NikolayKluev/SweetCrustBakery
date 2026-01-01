@@ -18,14 +18,16 @@ class CartController extends Controller
     {        
 
         $request->validate([            
-            'quantity' => 'integer|min:1|max:100',
+            'quantity' => 'required|integer|min:1|max:100',
         ]);
         
        
         $cart = session()->get('cart', []);        
         $id = $product->id;
-        $quantity = $request->integer('quantity');
+        $quantity = $request->integer('quantity') ?? 1;
         $price = (float)$product->price;
+
+        $quantity = max(1, $quantity);
 
         if (isset($cart[$id])) {
             $cart[$id]['quantity'] = $quantity;
@@ -43,7 +45,8 @@ class CartController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Товар добавлен в корзину!',            
+                'message' => 'Товар добавлен в корзину!',  
+                'cart_count' => array_sum(array_column($cart, 'quantity'))          
             ]);
          }
 
