@@ -15,19 +15,27 @@ use App\Enums\PaymentStatus;
 class CartController extends Controller
 {
     public function add(Request $request, Product $product)
-    {
+    {        
+
+        $request->validate([            
+            'quantity' => 'required|integer|min:1|max:100',
+        ]);
         
-        $cart = session()->get('cart', []);
-        
+       
+        $cart = session()->get('cart', []);        
         $id = $product->id;
+        $quantity = $request->integer('quantity') ?? 1;
+        $price = (float)$product->price;
+
+        $quantity = max(1, $quantity);
 
         if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+            $cart[$id]['quantity'] = $quantity;
         } else {
             $cart[$id] = [
                 'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1,
+                'price' => $price,
+                'quantity' => $quantity,
                 'image' => $product->image_url,
             ];
         }
@@ -35,12 +43,12 @@ class CartController extends Controller
         session()->put('cart', $cart);
 
         if ($request->expectsJson()) {
-        return response()->json([
-            'success' => true,
-            'message' => 'Товар добавлен в корзину!',
-            
-        ]);
-    }
+            return response()->json([
+                'success' => true,
+                'message' => 'Товар добавлен в корзину!',  
+                'cart_count' => array_sum(array_column($cart, 'quantity'))          
+            ]);
+         }
 
         return redirect()->back()->with('success', 'Товар добавлен в корзину!');
     }
@@ -56,5 +64,17 @@ class CartController extends Controller
         $total = collect($cart)->sum(fn($item) => $item['price'] * $item['quantity']);
 
         return view('cart.checkout', compact('cart', 'total'));
+    }
+
+    public function remove(Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->back()->with('success', 'Товар удалён из корзины.');
     }
 }
