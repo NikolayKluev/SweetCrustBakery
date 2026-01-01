@@ -2,6 +2,11 @@
 @section('title', 'Личный кабинет')
 
 @section('content')
+
+{{-- <h1>
+ @dd($cart) 
+</h1> --}}
+
 <div class="container py-5">
   <div class="row">
     <!-- Заголовок -->
@@ -173,64 +178,74 @@
         <div class="tab-pane fade" id="cart">
           <h4 class="mb-4" style="color: #8b4513;">Корзина</h4>
 
-          @if(empty($cart))
-            <div class="text-center py-4">
-              <i class="bi bi-basket text-muted" style="font-size: 3rem;"></i>
-              <p class="text-muted">Ваша корзина пуста.</p>
-              <div class="d-grid">              
-                <a href="/catalog/" class="btn btn-bakery">
-                  Наполнить</a>
-            </div>
-            </div>
-          @else
-            <div class="list-group mb-3">
-              @php $total = 0; @endphp
-              @foreach($cart as $id => $item)
-                @php $total += $item['price'] * $item['quantity']; @endphp
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6>{{ $item['name'] }}</h6>
-                    <small>{{ $item['quantity'] }} × {{ $item['price'] }} ₽</small>
+                @if(empty($cart) || !is_array($cart))
+                  <div class="text-center py-4">
+                    <i class="bi bi-basket text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted">Ваша корзина пуста.</p>
+                    <div class="d-grid">              
+                      <a href="/catalog/" class="btn btn-bakery">
+                        Наполнить</a>
+                    </div>
                   </div>
-                  <span>{{ $item['price'] * $item['quantity'] }} ₽
-                    
-                  <!-- Форма удаления -->
-                  <div class="delete-wrapper">
-                    <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
-                      @csrf
-                      @method('POST')
-                      <button class="btn btn-outline-danger delete-btn"
-                        type="submit" 
-                        onclick="return confirm('Удалить {{ $item['name'] }} из корзины?');"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash2">
-                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 
-                            0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 
-                            16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 
-                            1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 
-                            5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 
-                            1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                        </svg>
-                      </button>
-                    </form>
+                @else
+                  <div class="list-group mb-3">
+                    @php $total = 0; @endphp
+                    @foreach($cart as $id => $item)
+                      
+                      @php 
+                          $price = (float) $item['price'];
+                          $quantity = (int) $item['quantity'];
+                          $total += $price * $quantity;
+                      @endphp
+
+                      <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                          <h6>{{ $item['name'] }}</h6>
+                          <small>{{ $item['quantity'] }} × {{ $item['price'] }} ₽</small>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <!-- Стоимость позиции -->
+                            <span class="me-3 fw-bold">
+                                {{ number_format($price * $quantity, 2) }} ₽
+                            </span>
+
+                            <!-- Форма удаления -->
+                            <div class="delete-wrapper">
+                                <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button 
+                                        type="submit" 
+                                        class="btn btn-sm btn-outline-danger delete-btn"
+                                        onclick="return confirm('Удалить {{ e($item['name']) }} из корзины?');"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM8.5 1H7v1h1.5a.5.5 0 0 1 0 1H7v1h.5a.5.5 0 0 1 0 1H7v1h1.5a.5.5 0 0 1 0 1H7v1h1.5a.5.5 0 0 1 0 1H7v1a.5.5 0 0 1-.5.5H6a.5.5 0 0 1-.5-.5V2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>  
+                        </div>
+
+                      </div>                
+
+                    @endforeach
+                      
+
+                      <div class="d-flex justify-content-between mb-3">
+                        <strong>Итого:</strong>
+                        <strong>{{ $total }} ₽</strong>
+                      </div>
+
+                      <div class="d-grid">              
+                        <a href="{{ route('cart.checkout') }}" class="btn btn-bakery">
+                          Оформить заказ</a>
+                      </div>
                   </div>    
-                  </span>  
-                </div>                
-
-              @endforeach
-            </div>
-
-            <div class="d-flex justify-content-between mb-3">
-              <strong>Итого:</strong>
-              <strong>{{ $total }} ₽</strong>
-            </div>
-
-            <div class="d-grid">              
-              <a href="{{ route('cart.checkout') }}" class="btn btn-bakery">
-                Оформить заказ</a>
-            </div>
-          @endif
-        </div>
+                @endif
+            
       </div>
     </div>
   </div>
