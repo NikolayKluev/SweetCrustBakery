@@ -77,4 +77,40 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Товар удалён из корзины.');
     }
+   
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1|max:100',
+        ]);
+
+        $cart = session()->get('cart', []);
+
+        if (!isset($cart[$id])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Товар не найден в корзине.'
+            ], 404);
+        }
+
+        $cart[$id]['quantity'] = $request->integer('quantity');
+        session()->put('cart', $cart);
+
+        $item = $cart[$id];
+        $price = (float) $item['price'];
+        $quantity = (int) $item['quantity'];
+        $itemTotal = $price * $quantity;
+        $cartTotal = collect($cart)->sum(fn($i) => $i['price'] * $i['quantity']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Количество обновлено',
+            'item_total' => number_format($itemTotal, 2, '.', ''),
+            'cart_total' => number_format($cartTotal, 2, '.', ''),
+            'quantity' => $quantity,
+        ]);
+    }
+
+
 }

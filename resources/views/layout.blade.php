@@ -2,6 +2,7 @@
 <html >
 <head>
 <meta charset="UTF-8">  
+<meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title') | Sweet Crust Bakery</title>  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -131,6 +132,70 @@
       @endif
   });
 </script>
+
+<script>
+    // CSRF-токен
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    function updateQuantity(id, delta) {
+        const input = document.getElementById(`quantity_${id}`);
+        let quantity = parseInt(input.value);
+
+        if (delta === -1 && quantity <= 1) return; // минимум 1
+        if (delta === 1 && quantity >= 100) return; // максимум 100
+
+        quantity += delta;
+        input.value = quantity;
+
+        // Отправка AJAX
+        fetch(`/cart/update/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ quantity: quantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем сумму позиции
+                document.getElementById(`item-total-${id}`).textContent = 
+                    data.item_total + ' ₽';
+
+                // Обновляем итог
+                document.getElementById('cart-total').textContent = 
+                    data.cart_total + ' ₽';
+
+                // Показываем уведомление (опционально)
+                showToast('Количество обновлено');
+            } else {
+                alert(data.message);
+                input.value = input.value - delta; // откат
+            }
+        })
+        .catch(err => {
+            console.error('Ошибка:', err);
+            alert('Не удалось обновить количество');
+            input.value = input.value - delta;
+        });
+    }
+
+    // Опционально: уведомление
+    function showToast(message) {
+        let toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; top: 20px; right: 20px; background: #28a745; color: white;
+            padding: 10px 20px; border-radius: 5px; z-index: 9999; font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+</script>
+
 
 </body>
 </html>
