@@ -198,20 +198,48 @@
                           $total += $price * $quantity;
                       @endphp
 
-                      <div class="list-group-item d-flex justify-content-between align-items-center">
+                      <div class="list-group-item d-flex justify-content-between align-items-center" id="catr-item-{{ $id }}">
                         <div>
                           <h6>{{ $item['name'] }}</h6>
-                          <small>{{ $item['quantity'] }} × {{ $item['price'] }} ₽</small>
+                          <small>{{ number_format($price, 2) }} ₽</small>
                         </div>
 
+
+
                         <div class="d-flex align-items-center">
+                            <!-- Кнопки +- -->
+                            <div class="d-flex align-items-center">
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="updateQuantity({{ $id }}, -1)"
+                                >–</button>
+
+                                <input 
+                                    type="number" 
+                                    id="quantity_{{ $id }}" 
+                                    class="form-control form-control-sm text-center mx-1" 
+                                    value="{{ $quantity }}" 
+                                    min="1" 
+                                    max="100" 
+                                    readonly
+                                    style="width: 60px;"
+                                >
+
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="updateQuantity({{ $id }}, 1)"
+                                >+</button>
+                            </div>
+
                             <!-- Стоимость позиции -->
-                            <span class="me-3 fw-bold">
+                            <span class="me-3 fw-bold" id="item-total-{{ $id }}">
                                 {{ number_format($price * $quantity, 2) }} ₽
                             </span>
 
                             <!-- Форма удаления -->
-                            <div class="delete-wrapper">
+                            <div class="delete-wrapper ms-3">
                                 <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
@@ -235,8 +263,8 @@
                       
 
                       <div class="d-flex justify-content-between mb-3">
-                        <strong>Итого:</strong>
-                        <strong>{{ $total }} ₽</strong>
+                        <strong>Итого:</strong>                        
+                        <strong id="cart-total">{{ number_format($total, 2) }}</strong>
                       </div>
 
                       <div class="d-grid">              
