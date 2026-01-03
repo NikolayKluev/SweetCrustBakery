@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrdersStatus;
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\Order;
-use App\Models\Order_Item;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\Enums\PaymentStatus;
+
 
 class CartController extends Controller
 {
