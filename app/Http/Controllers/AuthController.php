@@ -8,12 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
-{
-    // Показ формы регистрации
-    public function showRegisterForm()
-    {
-        return view('auth.register');
-    }
+{   
 
     // Регистрация пользователя
     public function register(Request $request)
@@ -21,7 +16,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|numeric',
+            'phone' => 'required|regex:/^\+?[78][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$/',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
@@ -34,14 +29,15 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('profile')->with('success', 'Добро пожаловать, ' . $user->name . '!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Регистрация успешна!',
+            'user' => $user,
+            'redirect' => route('home'),
+        ]);
     }
 
-    // Показ формы входа
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
+   
 
     // Вход в систему
     public function login(Request $request)
@@ -51,11 +47,19 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'), $request->remember)) {
-            return redirect()->intended(route('profile'))->with('success', 'Вы успешно вошли!');
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'success' => false,
+                'errors' => ['email' => ['Неверный email или пароль.']]
+            ], 422);
         }
 
-        return back()->withErrors(['email' => 'Неверные данные.']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Вы вошли в систему.',
+            'user' => Auth::user(),
+            'redirect' => route('home'),
+        ]);
     }
 
     // Выход

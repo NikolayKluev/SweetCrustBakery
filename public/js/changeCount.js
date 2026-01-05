@@ -1,5 +1,5 @@
 // CSRF-токен
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+   // const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
     function updateQuantity(id, delta) {
         const input = document.getElementById(`quantity_${id}`);
@@ -16,7 +16,7 @@
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
+                'X-CSRF-TOKEN': window.csrfToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
             body: JSON.stringify({ quantity: quantity })
