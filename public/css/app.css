@@ -22,14 +22,13 @@ h3 {
 
 
 .nav-link, .navbar-brand, .text-bakery, .text-primary {
-  color: #8b4513 !important;  
+  color: #8b4513 !important;    
 }
 
 .nav-link:hover {
-  color: #5A2D10 !important;
+  color: #5A2D10 !important;  
   cursor: pointer;
 }
-
 
 /* Hero Section */
 .hero-section {  
@@ -38,8 +37,6 @@ h3 {
   padding-bottom: 0.5rem;  
   border-top: 2px solid #8b4513;
 }
-
-
 
 .hero-text {
   color: #4a4a4a;
@@ -68,6 +65,20 @@ h3 {
   border-top: 2px solid #8b4513;
 }
 
+.form-control {  
+  border: 2px solid #8b4513;
+}
+
+.form-control:focus {
+  border-color: #8b4513;
+  box-shadow: 0 4px 12px rgba(129, 54, 1, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-close {
+  color:#FFF8DC !important;
+}
+
 .nav-pills .nav-link.active {
   background-color: #8b4513;
   color: #FFF8DC !important;
@@ -89,5 +100,14 @@ h3 {
 .delete-wrapper:hover .delete-btn {
     background-color: #8b4513;
     color: #FFF8DC !important;    
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  background-color: #FFF8DC;
+  width: 100%;
+  z-index: 10;
+  opacity: 1;
 }
 

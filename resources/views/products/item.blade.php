@@ -36,7 +36,7 @@
             </button>
           </form>
         @else
-          <a href="{{ route('login.form') }}" class="btn btn-outline-secondary w-100">
+          <a href="#" data-bs-toggle="modal" data-bs-target="#authModal" class="btn btn-outline-secondary w-100">
             <i class="bi bi-lock"></i> Войдите, чтобы заказать
           </a>
         @endauth
@@ -65,7 +65,5 @@
       if (value > 1) {
           input.value = value - 1;
       }      
-  }
-
-  
+  }  
 </script>
